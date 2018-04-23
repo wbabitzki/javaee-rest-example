@@ -5,7 +5,7 @@ target/**
 .idea/**
 
 # Eclipse
-.settings/**
+**/.settings/**
 .classpath
 .factorypath
 .project

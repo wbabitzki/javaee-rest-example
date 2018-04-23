@@ -1,55 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ws.hello</groupId>
-    <artifactId>HelloWorld</artifactId>
+    <artifactId>hello-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>HelloWorld</name>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
 
-    <properties>
-        <jersey2.version>2.26</jersey2.version>
-        <javaee.verion>8.0</javaee.verion>
-        <failOnMissingWebXml>false</failOnMissingWebXml>
-    </properties>
-
-    <dependencies>
-        <!-- JavaEE 8.0 provided in the container -->
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee.verion}</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Jersey dependencies (JSON-B) for RS clients used in system tests -->
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>${jersey2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
-            <version>${jersey2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-binding</artifactId>
-            <version>${jersey2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-jaxb</artifactId>
-            <version>${jersey2.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>hello-base</module>
+        <module>hello-service</module>
+        <module>hello-systemtest</module>
+    </modules>
 
     <build>
         <plugins>
@@ -61,75 +21,6 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.9</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.13</version>
-                <configuration>
-                    <includes>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>failsafe-integration-tests</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.20.0</version>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>hello/payara:${project.version}</name>
-                            <alias>hello-payara</alias>
-                            <build>
-                                <dockerFileDir>${project.basedir}</dockerFileDir>
-                            </build>
-                            <run>
-                                <namingStrategy>alias</namingStrategy>
-                                <ports>
-                                    <port>8080:8080</port>
-                                </ports>
-                                <wait>
-                                    <http>
-                                        <url>http://localhost:8080/HelloWorld/rest/hello/asText</url>
-                                    </http>
-                                    <time>60000</time>
-                                </wait>
-                            </run>
-                        </image>
-                    </images>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>build</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>build</goal>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
